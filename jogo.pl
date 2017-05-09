@@ -13,3 +13,7 @@ playerX(N,Tab) :- arg(N,Tab,V), nonvar(V), V=x.
 playerO(N,Tab) :- arg(N,Tab,V), nonvar(V), V=o.
 emptyPos(N,Tab) :- arg(N,Tab,V), var(V).
 fullPos(N,Tab) :- \+ emptyPos(N,Tab).
+
+%% Verifica se alguem venceu
+win(T,won(playerX)) :- line([A,B,C]), playerX(A,T),playerX(B,T),playerX(C,T),!.
+win(T,won(playerO)) :- line([A,B,C]), playerO(A,T), playerO(B,T), playerO(C,T),!.
