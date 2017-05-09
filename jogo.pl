@@ -17,3 +17,7 @@ fullPos(N,Tab) :- \+ emptyPos(N,Tab).
 %% Verifica se alguem venceu
 win(T,won(playerX)) :- line([A,B,C]), playerX(A,T),playerX(B,T),playerX(C,T),!.
 win(T,won(playerO)) :- line([A,B,C]), playerO(A,T), playerO(B,T), playerO(C,T),!.
+%% Verifica se empatou 
+complete(XO,T) :- member(X,[1,2,3,4,5,6,7,8,9]),emptyPos(X,T),setMov(X,T,XO),!,complete(XO,T).
+complete(XO,T).
+tie(T):- complete(o,T),\+ win(T,_),!,complete(x,T),\+ win(T,_).
