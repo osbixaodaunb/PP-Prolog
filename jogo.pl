@@ -1,4 +1,3 @@
-%% Tentando montar o tabuleiro, comecando da parte de cima
 line([1,2,3]).
 line([4,5,6]).
 line([7,8,9]).
@@ -38,4 +37,11 @@ threat(playerX,[A,B,C],T,B) :- emptyPos(B,T),playerX(A,T),playerX(C,T).
 threat(playerX,[A,B,C],T,C) :- emptyPos(C,T),playerX(C,T),playerX(B,T).
 threat(playerO,[A,B,C],T,A) :- emptyPos(A,T),playerO(B,T),playerO(C,T).
 threat(playerO,[A,B,C],T,B) :- emptyPos(B,T),playerO(A,T),playerO(C,T).
-threat(playerO,[A,B,C],T,C) :- emptyPos(C,T),playerO(A,T),playerO(B,T).					
+threat(playerO,[A,B,C],T,C) :- emptyPos(C,T),playerO(A,T),playerO(B,T).
+
+  
+drawTab([X, Y, Z]) :-  nl,  drawLine(X),  write('----'), nl,  drawLine(Y), write('|'), nl,  
+    drawLine(Z),  nl.  
+  
+drawLine([P1, P2, P3]) :-  write('      '),  write(P1),  write(' | '),  write(P2),  write(' | '),  
+    write(P3),  write(' '),  nl.  
