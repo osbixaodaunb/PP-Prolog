@@ -45,4 +45,7 @@ arg(C,T,V3), drawColumn(V3),nl.
 drawColumn(A):- var(A)->write(' ');write(A).
 drawTab(T) :- nl, tab(7),drawLine(1,2,3,T), tab(7),write('------'),nl,
 tab(7),drawLine(4,5,6,T), tab(7),write('------'),nl,
-tab(7),drawLine(7,8,9,T).nl.  
+tab(7),drawLine(7,8,9,T).nl.
+
+start :- T = tab(A,B,C,D,E,F,G,H,I),drawTab(T,begin),play(T,player).
+play(T,Player):- chooseMov(T,Player),!,drawTab(T,Player),!,play(T,Jogador)
