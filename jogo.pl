@@ -14,12 +14,14 @@ emptyPos(N,Tab) :- arg(N,Tab,V), var(V).
 fullPos(N,Tab) :- \+ emptyPos(N,Tab).
 
 %% Verifica se alguem venceu
+gameOver(T,V) : win(T,V).
+gameOver(T,tiedGame) :- tiedGame(T).
 win(T,won(playerX)) :- line([A,B,C]), playerX(A,T),playerX(B,T),playerX(C,T),!.
 win(T,won(playerO)) :- line([A,B,C]), playerO(A,T), playerO(B,T), playerO(C,T),!.
 %% Verifica se empatou 
 complete(XO,T) :- member(X,[1,2,3,4,5,6,7,8,9]),emptyPos(X,T),setMov(X,T,XO),!,complete(XO,T).
 complete(XO,T).
-tie(T):- complete(o,T),\+ win(T,_),!,complete(x,T),\+ win(T,_).
+tiedGame(T):- complete(o,T),\+ win(T,_),!,complete(x,T),\+ win(T,_).
 
 testOK(P,Tab) :- emptyPos(P,Tab), arg(P,Tab, 'x'),!; 
 				write('Tentativa inválida, tente outra vez'),nl,chooseMov(Tab,enemy).
@@ -45,22 +47,13 @@ arg(C,T,V3), drawColumn(V3),nl.
 drawColumn(A):- var(A)->write(' ');write(A).
 drawTab(T) :- nl, tab(7),drawLine(1,2,3,T), tab(7),write('------'),nl,
 tab(7),drawLine(4,5,6,T), tab(7),write('------'),nl,
-tab(7),drawLine(7,8,9,T).nl.
+tab(7),drawLine(7,8,9,T).
 
-gameOver(T,V):-vence(T,V).
-gameOver(T,tie):- tie(T).
-
-endMessage(X):- write('Game Over'),write(X),nl,nl.
-
-guess(N,S):-repeat, S is random(N).
-
+start :- T = tab(A,B,C, D,E,F, G,H,I),showGame(T, begin),play(T, player).
+play(T, Player):- gameOver(T,Result),!,endMessage(Result).
+play(T, Player):- chooseMov(T, Player),!,showGame(T, Player),!,nextPlayer(Player, Opponent),!,play(T, Opponent).
 nextPlayer(cpu,human).
 nextPlayer(human,cpu).
-
-showGame(T,J) :- write('jogou:'),write(J),drawTab(T).
-
-start :- T = tab(A,B,C,D,E,F,G,H,I),showGame(T,begin),play(T,player).
-
-play(T,Player):- gameOver(T,Result),!,endMessage(Result).
-play(T,Player):- chooseMov(T,Player),!,showGame(T,Player),!,nextPlayer(Player,Opponent),!,play(T,Opponent).
-
+showGame(T,J):- write('jogou:'),write(J),drawTab(T).
+endMessage(X):- write('Game Over'),write(X),nl,nl.
+guess(N,S):-repeat, S is random(N).
