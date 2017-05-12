@@ -47,5 +47,20 @@ drawTab(T) :- nl, tab(7),drawLine(1,2,3,T), tab(7),write('------'),nl,
 tab(7),drawLine(4,5,6,T), tab(7),write('------'),nl,
 tab(7),drawLine(7,8,9,T).nl.
 
-start :- T = tab(A,B,C,D,E,F,G,H,I),drawTab(T,begin),play(T,player).
-play(T,Player):- chooseMov(T,Player),!,drawTab(T,Player),!,play(T,Jogador)
+gameOver(T,V):-vence(T,V).
+gameOver(T,tie):- tie(T).
+
+endMessage(X):- write('Game Over'),write(X),nl,nl.
+
+guess(N,S):-repeat, S is random(N).
+
+nextPlayer(cpu,human).
+nextPlayer(human,cpu).
+
+showGame(T,J) :- write('jogou:'),write(J),drawTab(T).
+
+start :- T = tab(A,B,C,D,E,F,G,H,I),showGame(T,begin),play(T,player).
+
+play(T,Player):- gameOver(T,Result),!,endMessage(Result).
+play(T,Player):- chooseMov(T,Player),!,showGame(T,Player),!,nextPlayer(Player,Opponent),!,play(T,Opponent).
+
