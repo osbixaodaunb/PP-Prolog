@@ -57,3 +57,9 @@ nextPlayer(human,cpu).
 showGame(T,J):- write('jogou:'),write(J),drawTab(T).
 endMessage(X):- write('Game Over'),write(X),nl,nl.
 guess(N,S):-repeat, S is random(N).
+
+%%test 
+t0(tab(o,o,o, *,*,*, *,*,*)).
+t1(tab(o,x,o, x,o,x, o,x,o)).
+t2(tab(o,x,o, x,*,x, *,*,*)).
+
