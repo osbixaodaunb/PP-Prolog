@@ -64,3 +64,9 @@ start :- T = tab(A,B,C,D,E,F,G,H,I),showGame(T,begin),play(T,player).
 play(T,Player):- gameOver(T,Result),!,endMessage(Result).
 play(T,Player):- chooseMov(T,Player),!,showGame(T,Player),!,nextPlayer(Player,Opponent),!,play(T,Opponent).
 
+%%test 
+t0(tab(o,o,o, *,*,*, *,*,*)).
+t1(tab(o,x,o, x,o,x, o,x,o)).
+t2(tab(o,x,o, x,*,x, *,*,*)).
+
+
