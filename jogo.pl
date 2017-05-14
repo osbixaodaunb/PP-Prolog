@@ -8,38 +8,43 @@ line([1,5,9]).
 line([3,5,7]).
 
 setMov(N,Tab,C):- arg(N,Tab,C).
-playerX(N,Tab) :- arg(N,Tab,V), nonvar(V), V=x.
-playerO(N,Tab) :- arg(N,Tab,V), nonvar(V), V=o.
+enemyX(N,Tab) :- arg(N,Tab,V), nonvar(V), V=x.
+enemyO(N,Tab) :- arg(N,Tab,V), nonvar(V), V=o.
 emptyPos(N,Tab) :- arg(N,Tab,V), var(V).
 fullPos(N,Tab) :- \+ emptyPos(N,Tab).
 
 %% Verifica se alguem venceu
-gameOver(T,V) : win(T,V).
+gameOver(T,V) :- win(T,V).
 gameOver(T,tiedGame) :- tiedGame(T).
-win(T,won(playerX)) :- line([A,B,C]), playerX(A,T),playerX(B,T),playerX(C,T),!.
-win(T,won(playerO)) :- line([A,B,C]), playerO(A,T), playerO(B,T), playerO(C,T),!.
+win(T,won(enemyX)) :- line([A,B,C]), enemyX(A,T),enemyX(B,T),enemyX(C,T),!.
+win(T,won(enemyO)) :- line([A,B,C]), enemyO(A,T), enemyO(B,T), enemyO(C,T),!.
 %% Verifica se empatou 
 complete(XO,T) :- member(X,[1,2,3,4,5,6,7,8,9]),emptyPos(X,T),setMov(X,T,XO),!,complete(XO,T).
 complete(XO,T).
 tiedGame(T):- complete(o,T),\+ win(T,_),!,complete(x,T),\+ win(T,_).
 
-testOK(P,Tab) :- emptyPos(P,Tab), arg(P,Tab, 'x'),!; 
-				write('Tentativa inválida, tente outra vez'),nl,chooseMov(Tab,enemy).
-chooseMov(T, enemy):- write('jogue (1..9):'),nl,read(P), testOK(P,T).
-chooseMov(T, computerEnemy):- 
-	threat(T,playerO,W),!,setMov(W,T,o),!;
-	threat(T,playerX,W),!,setMov(W,W,o),!;
-	emptyPos(5,T),setMov(5,T,'o'),!;
-	guess(9,W),member(W,[1,2,7,9]),emptyPos(W,T),setMov(W,T,'o'),!;
-	guess(9,W),member(W,[2,4,6,8]),emptyPos(W,T),setMov(W,T,'o'),!.
+testOk(P,Tab) :- emptyPos(P,Tab),arg(P,Tab,'x'),!;
+ 				  write('Jogada invalida,tente outra!'),nl,
+ 				  chooseMov(Tab,enemy).
 
-threat(Tab,CB,W) :- line(Position),threat(CB,Position,Tab,W),!.
-threat(playerX,[A,B,C],T,A) :- emptyPos(A,T),playerX(B,T),playerX(C,T).
-threat(playerX,[A,B,C],T,B) :- emptyPos(B,T),playerX(A,T),playerX(C,T).
-threat(playerX,[A,B,C],T,C) :- emptyPos(C,T),playerX(C,T),playerX(B,T).
-threat(playerO,[A,B,C],T,A) :- emptyPos(A,T),playerO(B,T),playerO(C,T).
-threat(playerO,[A,B,C],T,B) :- emptyPos(B,T),playerO(A,T),playerO(C,T).
-threat(playerO,[A,B,C],T,C) :- emptyPos(C,T),playerO(A,T),playerO(B,T).
+chooseMov(T, enemy):- write('jogue (1..9):'),nl,
+ 				  		 read(P), testOk(P,T).
+ 
+ chooseMov(T, computerEnemy):-
+	  threat(T,enemyO,W),!,setMov(W,T,o),! %% vence
+	; threat(T,enemyX,W),!,setMov(W,T,o),! %% defesa
+	; emptyPos(5,T),setMov(5,T,'o'),!
+	; guess(9,W),member(W,[1,3,7,9]),emptyPos(W,T),setMov(W,T,'o'),!
+	; guess(9,W),member(W,[2,4,6,8]),emptyPos(W,T),setMov(W,T,'o'),!.
+
+ %%
+ threat(Tab,CB,W) :- line(Pos),threat(CB,Pos,Tab,W),!.
+ threat(enemyX,[A,B,C],T,A) :- emptyPos(A,T),enemyX(B,T),enemyX(C,T).
+ threat(enemyX,[A,B,C],T,B) :- emptyPos(B,T),enemyX(A,T),enemyX(C,T).
+ threat(enemyX,[A,B,C],T,C) :- emptyPos(C,T),enemyX(A,T),enemyX(B,T).
+ threat(enemyO,[A,B,C],T,A) :- emptyPos(A,T),enemyO(B,T),enemyO(C,T).
+ threat(enemyO,[A,B,C],T,B) :- emptyPos(B,T),enemyO(A,T),enemyO(C,T).
+ threat(enemyO,[A,B,C],T,C) :- emptyPos(C,T),enemyO(A,T),enemyO(B,T).
 
 drawLine(A,B,C,T):-arg(A,T,V1), drawColumn(V1),write('|'),
 arg(B,T,V2), drawColumn(V2),write('|'),
@@ -49,11 +54,11 @@ drawTab(T) :- nl, tab(7),drawLine(1,2,3,T), tab(7),write('------'),nl,
 tab(7),drawLine(4,5,6,T), tab(7),write('------'),nl,
 tab(7),drawLine(7,8,9,T).
 
-start :- T = tab(A,B,C, D,E,F, G,H,I),showGame(T, begin),play(T, player).
+start :- T = tab(A,B,C, D,E,F, G,H,I),showGame(T, begin),play(T, enemy).
 play(T, Player):- gameOver(T,Result),!,endMessage(Result).
 play(T, Player):- chooseMov(T, Player),!,showGame(T, Player),!,nextPlayer(Player, Opponent),!,play(T, Opponent).
-nextPlayer(cpu,human).
-nextPlayer(human,cpu).
+nextPlayer(computerEnemy,enemy).
+nextPlayer(enemy,computerEnemy).
 showGame(T,J):- write('jogou:'),write(J),drawTab(T).
 endMessage(X):- write('Game Over'),write(X),nl,nl.
 guess(N,S):-repeat, S is random(N).
