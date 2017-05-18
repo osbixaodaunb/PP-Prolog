@@ -1,4 +1,3 @@
-%% Tentando montar o tabuleiro, comecando da parte de cima
 line([1,2,3]).
 line([4,5,6]).
 line([7,8,9]).
@@ -38,4 +37,15 @@ threat(playerX,[A,B,C],T,B) :- emptyPos(B,T),playerX(A,T),playerX(C,T).
 threat(playerX,[A,B,C],T,C) :- emptyPos(C,T),playerX(C,T),playerX(B,T).
 threat(playerO,[A,B,C],T,A) :- emptyPos(A,T),playerO(B,T),playerO(C,T).
 threat(playerO,[A,B,C],T,B) :- emptyPos(B,T),playerO(A,T),playerO(C,T).
-threat(playerO,[A,B,C],T,C) :- emptyPos(C,T),playerO(A,T),playerO(B,T).					
+threat(playerO,[A,B,C],T,C) :- emptyPos(C,T),playerO(A,T),playerO(B,T).
+
+drawLine(A,B,C,T):-arg(A,T,V1), drawColumn(V1),write('|'),
+arg(B,T,V2), drawColumn(V2),write('|'),
+arg(C,T,V3), drawColumn(V3),nl.
+drawColumn(A):- var(A)->write(' ');write(A).
+drawTab(T) :- nl, tab(7),drawLine(1,2,3,T), tab(7),write('------'),nl,
+tab(7),drawLine(4,5,6,T), tab(7),write('------'),nl,
+tab(7),drawLine(7,8,9,T).nl.
+
+start :- T = tab(A,B,C,D,E,F,G,H,I),drawTab(T,begin),play(T,player).
+play(T,Player):- chooseMov(T,Player),!,drawTab(T,Player),!,play(T,Jogador)
