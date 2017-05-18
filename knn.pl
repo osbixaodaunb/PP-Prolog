@@ -1,5 +1,16 @@
+%% knn.pl
+knn(Instance,K,Class) :-
+neighbors(Instance,K,Neighbors),
+sumClass(Neighbors,Sum),max(Sum,_-Class).
+knnW(Instance,K,Class) :-
+neighbors(Instance,K,Neighbors),
+sumClassW(Neighbors,Sum), max(Sum,_-Class).
+neighbors(Instance,K,Neighbors) :-
+findall(D-C,(student(_,C,E),dist(Instance,E,D)),Ds),
+keysort(Ds,L),
+first(K,L,Neighbors).
 %%
-dist([],[],0).
+dist([],[],0). %% nro de A=V diferentes
 dist([X|Xs],[X|Ys],N) :- !,dist(Xs,Ys,N).
 dist([_|Xs],[_|Ys],N) :-
 dist(Xs,Ys,M), N is M+1.
