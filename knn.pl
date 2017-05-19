@@ -9,8 +9,9 @@ neighbors(Instance,K,Neighbors) :-
 findall(D-C,(student(_,C,E),dist(Instance,E,D)),Ds),
 keysort(Ds,L),
 first(K,L,Neighbors).
-%%
-dist([],[],0). %% nro de A=V diferentes
+
+%% aritmethic functions
+dist([],[],0).
 dist([X|Xs],[X|Ys],N) :- !,dist(Xs,Ys,N).
 dist([_|Xs],[_|Ys],N) :-
 dist(Xs,Ys,M), N is M+1.
@@ -24,7 +25,7 @@ sumClassW([N-C|Ls],[S-C|R]) :- sumOneClassW(C,[N-C|Ls],Lo,S), sumClassW(Lo,R).
 sumOneClassW(C,Li,Lo,S):-selClass(C,Li,Co,Lo),zipper(Co,Ns,Cs),
 maplist(funcw,Ns,Nsw),sumlist(Nsw,S).
 funcw(X, 1/(1+X*X) ).
-%%
+%% essentials
 zipper([(X-Y)|XYs],[X|Xs],[Y|Ys]):-!,zipper(XYs,Xs,Ys).
 zipper([],[],[]).
 max(L,M):-msort(L,Lo),last(Lo,M).
